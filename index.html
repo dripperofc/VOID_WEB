@@ -436,6 +436,10 @@ body {
       <label>Usuário</label>
       <input type="text" id="l-user" placeholder="seu usuário" autocomplete="username">
     </div>
+    <div class="field" id="field-nick" style="display:none">
+      <label>Apelido</label>
+      <input type="text" id="l-nick" placeholder="como quer ser chamado">
+    </div>
     <div class="field">
       <label>Senha</label>
       <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password">
@@ -588,6 +592,7 @@ function setAuthTab(tab) {
     el.classList.toggle('active', (i === 0) === !isAuthRegister);
   });
   document.querySelector('.btn-primary').textContent = isAuthRegister ? 'Criar conta' : 'Entrar';
+  document.getElementById('field-nick').style.display = isAuthRegister ? '' : 'none';
   document.getElementById('login-err').style.display = 'none';
 }
 
@@ -600,10 +605,12 @@ document.getElementById('l-user').addEventListener('keydown', e => {
 
 async function doAuth() {
   const user = document.getElementById('l-user').value.trim().toLowerCase();
+  const nick = document.getElementById('l-nick').value.trim();
   const pass = document.getElementById('l-pass').value;
   const err  = document.getElementById('login-err');
   err.style.display = 'none';
   if (!user || !pass) { showErr('Preencha todos os campos.'); return; }
+  if (isAuthRegister && !nick) { showErr('Preencha o apelido.'); return; }
 
   const btn = document.querySelector('.btn-primary');
   btn.textContent = '...'; btn.disabled = true;
@@ -618,7 +625,7 @@ async function doAuth() {
     setupHubEvents();
     await conn.start();
 
-    const result = await conn.invoke('AuthenticateUser', user, pass, isAuthRegister);
+    const result = await conn.invoke('AuthenticateUser', user, pass, isAuthRegister, nick);
     if (result === 'ok') {
       me.username = user;
       const profile = await conn.invoke('GetUserProfile', user);
