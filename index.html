@@ -568,6 +568,7 @@ const SERVER_URL = 'https://void-server-qz9e.onrender.com/';
 // STATE
 // ══════════════════════════════════════════════
 let conn = null;
+let jwtToken = localStorage.getItem('void_token') || '';
 let me = { username: '', nickname: '', color: '#7c6af7', initials: '?' };
 let currentChat = null; // { type: 'dm'|'channel', id: string, name: string }
 let friends = [];
@@ -618,7 +619,7 @@ async function doAuth() {
   try {
     await loadSignalR();
     conn = new signalR.HubConnectionBuilder()
-      .withUrl(`${SERVER_URL}/voidchat?username=${encodeURIComponent(user)}`)
+      .withUrl(`${SERVER_URL}/voidchat?username=${encodeURIComponent(user)}&token=${encodeURIComponent(jwtToken)}`)
       .withAutomaticReconnect([0, 2000, 5000, 10000])
       .build();
 
@@ -626,7 +627,10 @@ async function doAuth() {
     await conn.start();
 
     const result = await conn.invoke('AuthenticateUser', user, pass, isAuthRegister, nick);
-    if (result === 'ok') {
+
+    if (result && result.length > 20 && !result.startsWith('error') && !result.includes('invalid') && !result.includes('exists')) {
+      jwtToken = result;
+      localStorage.setItem('void_token', result);
       me.username = user;
       const profile = await conn.invoke('GetUserProfile', user);
       if (profile) {
@@ -638,11 +642,17 @@ async function doAuth() {
       await conn.invoke('GetPendingRequests', user).then(r => { pendingRequests = r || []; });
       playSound('join');
       launchApp();
-    } else {
+    } else if (result !== 'ok') {
       await conn.stop();
       conn = null;
-      const msgs = { user_exists: 'Usuário já existe.', invalid_credentials: 'Usuário ou senha incorretos.', error: 'Erro no servidor.' };
+      jwtToken = '';
+      localStorage.removeItem('void_token');
+      const msgs = { user_exists: 'Usuário já existe.', invalid_credentials: 'Usuário ou senha incorretos.', invalid_username_length: 'Usuário: 3-32 caracteres.', invalid_password_length: 'Senha: 4-128 caracteres.', error: 'Erro no servidor.' };
       showErr(msgs[result] || 'Erro desconhecido.');
+    } else {
+      jwtToken = '';
+      localStorage.removeItem('void_token');
+      showErr('Erro desconhecido.');
     }
   } catch(e) {
     showErr('Não foi possível conectar ao servidor.');
