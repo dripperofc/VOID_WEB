@@ -760,6 +760,10 @@ function launchApp() {
 // ══════════════════════════════════════════════
 function renderServers() {
   const list = document.getElementById('srv-list');
+  if (!servers || servers.length === 0) {
+    list.innerHTML = '';
+    return;
+  }
   list.innerHTML = servers.map((s, i) => `
     <button class="srv-btn" title="${s.name}" onclick="selectServer(${i})" id="srv-btn-${i}">
       ${s.name[0].toUpperCase()}
@@ -1105,11 +1109,22 @@ async function doLogout() {
   playSound('udisconnect');
   await endVoiceCall();
   if (conn) { try { await conn.stop(); } catch {} conn = null; }
-  friends = []; pendingRequests = []; onlineFriends = {};
+  
+  // clear state
+  jwtToken = '';
+  localStorage.removeItem('void_token');
+  me = { username: '', nickname: '', color: '#7c6af7', initials: '?' };
+  friends = [];
+  pendingRequests = [];
+  onlineFriends = {};
   currentChat = null;
+  
+  // show login
   document.getElementById('app').classList.remove('visible');
   document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('l-user').value = '';
   document.getElementById('l-pass').value = '';
+  document.getElementById('l-nick').value = '';
 }
 
 // ══════════════════════════════════════════════
