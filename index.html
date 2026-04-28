@@ -788,6 +788,9 @@ function launchApp() {
   av.style.background = me.color;
   document.getElementById('my-name').textContent = me.nickname;
 
+  // register presence on server
+  try { conn.invoke('RegisterPresence'); } catch {}
+
   renderServers();
   showDMs();
 }
@@ -833,13 +836,26 @@ function addServer() {
   const name = document.getElementById('srv-name-input').value.trim();
   const chan  = document.getElementById('srv-chan-input').value.trim() || 'geral';
   if (!name) return;
-  servers.push({ name, channels: [chan] });
-  localStorage.setItem('void_servers', JSON.stringify(servers));
-  renderServers();
-  closeModal('modal-addserver');
-  document.getElementById('srv-name-input').value = '';
-  document.getElementById('srv-chan-input').value = '';
-  toast('Servidor criado!', 'ok');
+  
+  // create on server
+  conn.invoke('CreateServer', name).then(server => {
+    if (server) {
+      servers.push({ name: server.name, channels: server.channels });
+      localStorage.setItem('void_servers', JSON.stringify(servers));
+      renderServers();
+      closeModal('modal-addserver');
+      document.getElementById('srv-name-input').value = '';
+      document.getElementById('srv-chan-input').value = '';
+      toast('Servidor criado!', 'ok');
+    }
+  }).catch(() => {
+    // fall back to local
+    servers.push({ name, channels: [chan] });
+    localStorage.setItem('void_servers', JSON.stringify(servers));
+    renderServers();
+    closeModal('modal-addserver');
+    toast('Servidor criado (local)!', 'ok');
+  });
 }
 
 // ══════════════════════════════════════════════
