@@ -647,12 +647,12 @@ async function doAuth() {
       conn = null;
       jwtToken = '';
       localStorage.removeItem('void_token');
-      const msgs = { user_exists: 'Usuário já existe.', invalid_credentials: 'Usuário ou senha incorretos.', invalid_username_length: 'Usuário: 3-32 caracteres.', invalid_password_length: 'Senha: 4-128 caracteres.', error: 'Erro no servidor.' };
+      const msgs = { user_exists: 'Usuario ja existe.', invalid_credentials: 'Usuario ou senha incorretos.', invalid_username_length: 'Usuario: 3-32 caracteres.', invalid_password_length: 'Senha: 4-128 caracteres.', error: 'Erro no servidor.' };
       showErr(msgs[result] || 'Erro desconhecido.');
     } else {
       jwtToken = '';
       localStorage.removeItem('void_token');
-      showErr('Erro desconhecido.');
+      showErr('Deu ruim.');
     }
   } catch(e) {
     showErr('Não foi possível conectar ao servidor.');
