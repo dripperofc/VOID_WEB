@@ -528,19 +528,21 @@ body {
 <div class="modal-bg" id="modal-addserver">
   <div class="modal">
     <h3>Adicionar Servidor</h3>
-    <p>Crie um servidor novo ou entre num existente pelo ID.</p>
+    <p>Crie um servidor novo ou entre num existente pelo código de convite.</p>
     <div class="field">
-      <label>Nome do servidor</label>
-      <input type="text" class="mini-input" id="srv-name-input" placeholder="Meu servidor" style="width:100%">
-    </div>
-    <div class="field">
-      <label>Canal inicial</label>
-      <input type="text" class="mini-input" id="srv-chan-input" placeholder="geral" style="width:100%">
+      <label>Criar servidor</label>
+      <input type="text" class="mini-input" id="srv-name-input" placeholder="Nome do servidor" style="width:100%">
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-addserver')">Cancelar</button>
       <button class="btn-primary" style="flex:1;margin-top:0" onclick="addServer()">Criar</button>
     </div>
+    <div style="border-top:1px solid var(--border);margin:16px 0 12px;padding-top:16px">
+      <label>Entrar por convite</label>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input type="text" class="mini-input" id="invite-input" placeholder="CÓDIGO" style="flex:1;text-transform:uppercase;letter-spacing:2px" onkeydown="if(event.key==='Enter')joinByCode()">
+        <button class="mini-btn" onclick="joinByCode()">Entrar</button>
+      </div>
   </div>
 </div>
 
@@ -551,17 +553,17 @@ body {
   <div class="modal">
     <h3>Meu Perfil</h3>
     <div class="profile-info">
-      <div class="profile-avatar" id="profile-avatar" style="background:${me.color}">${me.initials}</div>
-      <div class="profile-name">${me.nickname}</div>
-      <div class="profile-username">@${me.username}</div>
+      <div class="profile-avatar" id="profile-avatar" style="background:#7c6af7">?</div>
+      <div class="profile-name" id="profile-name">—</div>
+      <div class="profile-username" id="profile-username">@—</div>
     </div>
     <div class="field">
       <label>Apelido</label>
-      <input type="text" class="mini-input" id="profile-nickname" value="${me.nickname}" style="width:100%">
+      <input type="text" class="mini-input" id="profile-nickname" style="width:100%">
     </div>
     <div class="field">
       <label>Cor do avatar</label>
-      <input type="color" id="profile-color" value="${me.color}" style="height:40px;width:60px;border:none">
+      <input type="color" id="profile-color" value="#7c6af7" style="height:40px;width:60px;border:none">
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-profile')">Cancelar</button>
@@ -600,10 +602,10 @@ const SERVER_URL = 'https://void-server-qz9e.onrender.com';
 let conn = null;
 let jwtToken = localStorage.getItem('void_token') || '';
 let me = { username: '', nickname: '', color: '#7c6af7', initials: '?' };
-let currentChat = null; // { type: 'dm'|'channel', id: string, name: string }
+let currentChat = null;
 let friends = [];
 let pendingRequests = [];
-let servers = JSON.parse(localStorage.getItem('void_servers') || '[]');
+let servers = [];
 let onlineFriends = {};
 let selfMuted = false;
 let inCall = false;
@@ -613,13 +615,6 @@ let callSeconds = 0;
 let localStream = null;
 let peerConn = null;
 let isAuthRegister = false;
-
-// init default server only once
-if (!localStorage.getItem('void_servers_initialized')) {
-  servers = [{ name: 'Void', channels: ['geral', 'chat-livre', 'música'] }];
-  localStorage.setItem('void_servers', JSON.stringify(servers));
-  localStorage.setItem('void_servers_initialized', 'true');
-}
 
 // ══════════════════════════════════════════════
 // LOGIN
@@ -665,9 +660,10 @@ async function doAuth() {
 
     const result = await conn.invoke('AuthenticateUser', user, pass, isAuthRegister, nick);
 
-    if (result && result.length > 20 && !result.startsWith('error') && !result.includes('invalid') && !result.includes('exists')) {
-      jwtToken = result;
-      localStorage.setItem('void_token', result);
+    if (result && result.startsWith('ok:')) {
+      const parts = result.split(':');
+      jwtToken = parts[1];
+      localStorage.setItem('void_token', jwtToken);
       me.username = user;
       const profile = await conn.invoke('GetUserProfile', user);
       if (profile) {
@@ -679,6 +675,11 @@ async function doAuth() {
       await conn.invoke('GetPendingRequests', user).then(r => { pendingRequests = r || []; });
       playSound('join');
       launchApp();
+
+      // Se registro e servidor oficial existe, pergunta se quer entrar
+      if (isAuthRegister && parts[2] === 'True') {
+        askJoinOfficial();
+      }
     } else if (result !== 'ok') {
       await conn.stop();
       conn = null;
@@ -771,8 +772,17 @@ function setupHubEvents() {
 
   conn.on('Kicked', () => { toast('Desconectado pelo admin.', 'err'); setTimeout(doLogout, 2000); });
 
+  conn.on('FriendsPresenceSnapshot', onlineList => {
+    onlineList.forEach(u => onlineFriends[u] = true);
+    renderChannelsPanel();
+  });
+
+  conn.on('UserJoinedServer', (user, serverName) => {
+    toast(`${user} entrou no servidor ${serverName}`, 'ok');
+  });
+
   conn.onreconnecting(() => toast('Reconectando...'));
-  conn.onreconnected(() => toast('Reconectado!', 'ok'));
+  conn.onreconnected(() => { toast('Reconectado!', 'ok'); try { conn.invoke('RegisterPresence'); } catch {} });
 }
 
 // ══════════════════════════════════════════════
@@ -782,17 +792,58 @@ function launchApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').classList.add('visible');
 
-  // user bar
   const av = document.getElementById('my-avatar');
   av.textContent = me.initials;
   av.style.background = me.color;
   document.getElementById('my-name').textContent = me.nickname;
 
-  // register presence on server
   try { conn.invoke('RegisterPresence'); } catch {}
+  try { conn.invoke('NotifyOnline', me.username); } catch {}
 
-  renderServers();
-  showDMs();
+  loadServers().then(() => {
+    renderServers();
+    showDMs();
+  });
+}
+
+// ══════════════════════════════════════════════
+// OFFICIAL SERVER
+// ══════════════════════════════════════════════
+function askJoinOfficial() {
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg open';
+  bg.id = 'modal-official';
+  bg.innerHTML = `
+    <div class="modal">
+      <h3>Servidor VOID Oficial</h3>
+      <p>Você quer entrar no servidor oficial do VOID?</p>
+      <p style="font-size:12px;color:var(--muted)">Encontre outros usuários, veja novidades e dê sugestões.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal('modal-official');document.getElementById('modal-official').remove()">Agora não</button>
+        <button class="btn-primary" style="flex:1;margin-top:0" onclick="joinOfficial()">Entrar</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(bg);
+  bg.addEventListener('click', e => { if (e.target === bg) { bg.remove(); } });
+}
+
+async function joinOfficial() {
+  try {
+    await conn.invoke('JoinOfficialServer');
+    toast('Bem-vindo ao servidor VOID Oficial!', 'ok');
+    await loadServers();
+    renderServers();
+  } catch { toast('Erro ao entrar.', 'err'); }
+  const el = document.getElementById('modal-official');
+  if (el) el.remove();
+}
+
+async function loadServers() {
+  try {
+    const list = await conn.invoke('GetServers');
+    servers = list || [];
+  } catch { servers = []; }
 }
 
 // ══════════════════════════════════════════════
@@ -801,12 +852,12 @@ function launchApp() {
 function renderServers() {
   const list = document.getElementById('srv-list');
   if (!servers || servers.length === 0) {
-    list.innerHTML = '';
+    list.innerHTML = '<div class="cp-item" style="color:var(--muted);cursor:default;font-size:10px;padding:8px">Nenhum servidor</div>';
     return;
   }
   list.innerHTML = servers.map((s, i) => `
-    <button class="srv-btn" title="${s.name}" onclick="selectServer(${i})" id="srv-btn-${i}">
-      ${s.name[0].toUpperCase()}
+    <button class="srv-btn" title="${escHtml(s.name)}" onclick="selectServer(${i})" id="srv-btn-${i}">
+      ${s.name ? s.name[0].toUpperCase() : '?'}
     </button>
   `).join('');
 }
@@ -820,42 +871,48 @@ function selectServer(i) {
 
   document.getElementById('cp-title').textContent = s.name;
   const body = document.getElementById('cp-body');
-  body.innerHTML = `
-    <div class="cp-section-label">Canais</div>
-    ${s.channels.map(c => `
-      <div class="cp-item" onclick="selectChannel('${s.name}','${c}')" id="ch-${s.name}-${c}">
+  let html = `<div class="cp-section-label">Canais</div>`;
+  if (s.channels) {
+    html += s.channels.map(c => `
+      <div class="cp-item" onclick="selectChannel('${escHtml(s.id)}','${escHtml(c)}')" id="ch-${escHtml(s.id)}-${escHtml(c)}">
         <span class="icon">#</span>
-        <span class="name">${c}</span>
+        <span class="name">${escHtml(c)}</span>
       </div>
-    `).join('')}
-  `;
+    `).join('');
+  }
+  body.innerHTML = html;
   resetChat('# ' + s.name, '⚡');
 }
 
 function addServer() {
   const name = document.getElementById('srv-name-input').value.trim();
-  const chan  = document.getElementById('srv-chan-input').value.trim() || 'geral';
   if (!name) return;
-  
-  // create on server
-  conn.invoke('CreateServer', name).then(server => {
+
+  conn.invoke('CreateServer', name).then(async server => {
     if (server) {
-      servers.push({ name: server.name, channels: server.channels });
-      localStorage.setItem('void_servers', JSON.stringify(servers));
+      await loadServers();
       renderServers();
       closeModal('modal-addserver');
       document.getElementById('srv-name-input').value = '';
-      document.getElementById('srv-chan-input').value = '';
-      toast('Servidor criado!', 'ok');
+      toast(`Servidor "${server.name}" criado!`, 'ok');
     }
-  }).catch(() => {
-    // fall back to local
-    servers.push({ name, channels: [chan] });
-    localStorage.setItem('void_servers', JSON.stringify(servers));
-    renderServers();
-    closeModal('modal-addserver');
-    toast('Servidor criado (local)!', 'ok');
-  });
+  }).catch(() => toast('Erro ao criar servidor.', 'err'));
+}
+
+async function joinByCode() {
+  const code = document.getElementById('invite-input').value.trim().toUpperCase();
+  if (!code) return;
+  try {
+    const ok = await conn.invoke('JoinServer', code);
+    if (ok) {
+      await loadServers();
+      renderServers();
+      closeModal('modal-addserver');
+      toast('Entrou no servidor!', 'ok');
+    } else {
+      toast('Convite inválido.', 'err');
+    }
+  } catch { toast('Erro ao entrar.', 'err'); }
 }
 
 // ══════════════════════════════════════════════
@@ -1173,6 +1230,7 @@ async function doLogout() {
   friends = [];
   pendingRequests = [];
   onlineFriends = {};
+  servers = [];
   currentChat = null;
   
   // show login
@@ -1198,7 +1256,9 @@ function showMyProfile() {
   document.getElementById('profile-nickname').value = me.nickname;
   document.getElementById('profile-color').value = me.color;
   document.getElementById('profile-avatar').textContent = me.initials;
-  document.querySelector('#modal-profile .profile-username').textContent = '@' + me.username;
+  document.getElementById('profile-avatar').style.background = me.color;
+  document.getElementById('profile-name').textContent = me.nickname;
+  document.getElementById('profile-username').textContent = '@' + me.username;
   openModal('modal-profile');
 }
 
