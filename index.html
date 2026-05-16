@@ -9,64 +9,55 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #000000;
-  --bg2: #0A0A0A;
-  --bg3: #111111;
-  --bg4: #181818;
-  --accent: #FFFFFF;
-  --accent-hover: #cccccc;
-  --text: #FFFFFF;
-  --text-secondary: #aaaaaa;
-  --muted: #666666;
-  --border: #222222;
-  --border-light: #333333;
-  --green: #43B581;
-  --red: #F04747;
-  --yellow: #FAA61A;
-  --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-full: 999px;
-  --sidebar-w: 58px;
-  --channels-w: 240px;
-  --transition: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --bg0: #0a0a0b;
+  --bg1: #111114;
+  --bg2: #18181d;
+  --bg3: #1f1f26;
+  --bg4: #26262f;
+  --accent: #7c6af7;
+  --accent2: #a78bfa;
+  --accent-dim: #7c6af722;
+  --green: #3fcf8e;
+  --red: #f75959;
+  --yellow: #f5c842;
+  --text: #e8e8f0;
+  --muted: #666680;
+  --border: #2a2a38;
+  --msg-hover: #1a1a22;
+  --radius: 8px;
+  --sidebar-w: 64px;
+  --channels-w: 220px;
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 html, body { height:100%; overflow:hidden; }
 body {
-  background: var(--bg);
+  background: var(--bg0);
   color: var(--text);
   font-family: 'Space Mono', monospace;
   font-size: 13px;
-  display: flex; flex-direction: column;
-  -webkit-font-smoothing: antialiased;
-}
-body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  display: flex;
+  flex-direction: column;
 }
 
-/* ═══ SCROLLBAR ═══ */
-::-webkit-scrollbar { width: 3px; }
+/* ══════════════════════════════
+   SCROLLBAR
+══════════════════════════════ */
+::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
-/* ═══ LOGIN ═══ */
+/* ══════════════════════════════
+   LOGIN SCREEN
+══════════════════════════════ */
 #login-screen {
   position: fixed; inset: 0; z-index: 1000;
   display: flex; align-items: center; justify-content: center;
-  background: var(--bg);
+  background: var(--bg0);
 }
 .login-wrap {
-  width: 380px; max-width: 92vw;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  padding: 40px 36px;
-  animation: fadeUp .45s var(--transition-slow);
+  width: 380px;
+  animation: fadeUp .4s ease;
 }
 @keyframes fadeUp {
   from { opacity:0; transform:translateY(16px); }
@@ -74,92 +65,94 @@ body::before {
 }
 .login-logo {
   font-family: 'Syne', sans-serif;
-  font-size: 30px; font-weight: 800;
-  letter-spacing: 6px; text-align: center;
-  margin-bottom: 2px;
+  font-size: 36px; font-weight: 800;
+  letter-spacing: 8px;
+  color: var(--text);
+  margin-bottom: 4px;
 }
 .login-sub {
-  font-size: 9px; letter-spacing: 3px;
-  color: var(--muted); margin-bottom: 32px;
-  text-transform: uppercase; text-align: center;
+  font-size: 10px; letter-spacing: 3px;
+  color: var(--muted); margin-bottom: 40px;
+  text-transform: uppercase;
 }
 .login-tabs {
-  display: flex; gap: 8px; margin-bottom: 24px;
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
 }
 .ltab {
-  flex: 1; background: none; border: 1px solid var(--border);
+  background: none; border: none; border-bottom: 2px solid transparent;
   color: var(--muted); font-family: 'Space Mono', monospace;
-  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-  padding: 10px; cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition);
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  padding: 8px 20px; cursor: pointer; margin-bottom: -1px;
+  transition: all .2s;
 }
-.ltab.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-.ltab:not(.active):hover { border-color: var(--muted); color: var(--text); }
-.field { margin-bottom: 14px; }
+.ltab.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+.field { margin-bottom: 16px; }
 .field label {
-  display: block; font-size: 9px; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+  display: block; font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
 }
 .field input {
-  width: 100%; background: var(--bg3); border: 1px solid var(--border);
+  width: 100%; background: var(--bg2); border: 1px solid var(--border);
   color: var(--text); font-family: 'Space Mono', monospace; font-size: 13px;
-  padding: 11px 14px; outline: none;
-  transition: border var(--transition);
+  padding: 11px 14px; outline: none; border-radius: var(--radius);
+  transition: border .2s;
 }
 .field input:focus { border-color: var(--accent); }
 .btn-primary {
-  width: 100%; background: var(--accent); color: var(--bg);
-  border: 2px solid var(--accent); font-family: 'Space Mono', monospace;
-  font-size: 11px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; padding: 11px;
-  cursor: pointer; border-radius: var(--radius-full);
-  transition: all var(--transition);
-  margin-top: 6px;
+  width: 100%; background: var(--accent); color: #fff;
+  border: none; font-family: 'Space Mono', monospace;
+  font-size: 12px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; padding: 13px;
+  border-radius: var(--radius); cursor: pointer;
+  transition: background .2s, transform .1s;
+  margin-top: 4px;
 }
-.btn-primary:hover { background: transparent; color: var(--accent); }
-.btn-primary:active { transform: scale(.97); }
+.btn-primary:hover { background: var(--accent2); }
+.btn-primary:active { transform: scale(.98); }
 .login-err {
-  color: var(--red); font-size: 10px;
-  margin-top: 14px; display: none; text-align: center; letter-spacing: 1px;
+  color: var(--red); font-size: 11px;
+  margin-top: 12px; display: none; text-align: center;
 }
 
-/* ═══ APP LAYOUT ═══ */
-#app { display: none; flex: 1; overflow: hidden; flex-direction: row; position: relative; z-index: 1; }
+/* ══════════════════════════════
+   APP LAYOUT
+══════════════════════════════ */
+#app { display: none; flex: 1; overflow: hidden; flex-direction: row; }
 #app.visible { display: flex; }
 
 /* server sidebar */
 .srv-bar {
   width: var(--sidebar-w);
-  background: var(--bg2);
+  background: var(--bg1);
   border-right: 1px solid var(--border);
   display: flex; flex-direction: column;
-  align-items: center; padding: 10px 0; gap: 4px;
-  overflow-y: auto; flex-shrink: 0; z-index: 10;
+  align-items: center; padding: 12px 0; gap: 6px;
+  overflow-y: auto; flex-shrink: 0;
 }
 .srv-btn {
-  width: 40px; height: 40px;
-  background: var(--bg3); border: 1px solid var(--border);
+  width: 44px; height: 44px;
+  background: var(--bg3); border: none; border-radius: 50%;
   cursor: pointer; color: var(--muted); font-family: 'Syne', sans-serif;
-  font-size: 13px; font-weight: 800; border-radius: var(--radius-full);
-  transition: all var(--transition);
+  font-size: 14px; font-weight: 800; transition: all .2s;
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+  position: relative; flex-shrink: 0;
 }
 .srv-btn:hover, .srv-btn.active {
-  background: var(--accent); color: var(--bg); border-color: var(--accent);
+  border-radius: 14px; background: var(--accent);
+  color: #fff;
 }
-.srv-btn.dm-btn { font-size: 16px; }
-.srv-btn.dm-btn:hover, .srv-btn.dm-btn.active { background: var(--green); border-color: var(--green); color: var(--bg); }
-.srv-sep { width: 24px; height: 1px; background: var(--border); margin: 4px 0; }
+.srv-btn.dm-btn { font-size: 18px; border-radius: 50%; }
+.srv-btn.dm-btn:hover, .srv-btn.dm-btn.active { border-radius: 50%; background: var(--green); }
+.srv-sep { width: 32px; height: 1px; background: var(--border); margin: 4px 0; }
 .srv-add {
-  background: var(--bg3); border: 1px solid var(--border);
-  width: 40px; height: 40px; color: var(--green); font-size: 18px;
+  background: var(--bg3); border: none; border-radius: 50%;
+  width: 44px; height: 44px; color: var(--green); font-size: 22px;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
-  border-radius: var(--radius-full);
-  transition: all var(--transition);
+  transition: all .2s;
 }
-.srv-add:hover { background: var(--green); color: var(--bg); border-color: var(--green); }
+.srv-add:hover { border-radius: 14px; background: var(--green); color: #fff; }
 
 /* channels panel */
 .channels-panel {
@@ -167,325 +160,262 @@ body::before {
   background: var(--bg2);
   border-right: 1px solid var(--border);
   display: flex; flex-direction: column;
-  flex-shrink: 0; z-index: 5;
-  transition: transform var(--transition-slow);
+  flex-shrink: 0;
 }
 .cp-header {
-  padding: 14px 14px 11px;
+  padding: 16px 14px 12px;
   border-bottom: 1px solid var(--border);
 }
 .cp-title {
   font-family: 'Syne', sans-serif;
-  font-size: 13px; font-weight: 800;
-  letter-spacing: 1px;
+  font-size: 14px; font-weight: 800;
+  letter-spacing: 1px; color: var(--text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.cp-body { flex: 1; overflow-y: auto; padding: 6px 0; }
+.cp-body { flex: 1; overflow-y: auto; padding: 8px 0; }
 .cp-section-label {
-  font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--muted); padding: 14px 14px 4px;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); padding: 12px 14px 4px;
   display: flex; align-items: center; justify-content: space-between;
 }
 .cp-item {
   display: flex; align-items: center; gap: 8px;
-  padding: 6px 10px; cursor: pointer;
-  margin: 1px 8px; color: var(--muted);
-  transition: all var(--transition); font-size: 12px;
-  border: 1px solid transparent;
+  padding: 6px 12px; cursor: pointer; border-radius: 6px;
+  margin: 1px 6px; color: var(--muted); transition: all .15s;
+  font-size: 13px;
 }
-.cp-item:hover { border-color: var(--border); color: var(--text); }
-.cp-item.active { border-color: var(--accent); color: var(--accent); }
-.cp-item .icon { font-size: 13px; flex-shrink: 0; width: 18px; text-align: center; }
+.cp-item:hover { background: var(--bg3); color: var(--text); }
+.cp-item.active { background: var(--bg4); color: var(--text); }
+.cp-item .icon { font-size: 14px; flex-shrink: 0; }
 .cp-item .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cp-item .badge {
   margin-left: auto; background: var(--red);
-  color: var(--bg); font-size: 8px; padding: 1px 6px;
-  flex-shrink: 0;
+  color: #fff; font-size: 9px; padding: 1px 5px;
+  border-radius: 10px; flex-shrink: 0;
 }
 .online-dot {
-  width: 6px; height: 6px;
+  width: 8px; height: 8px; border-radius: 50%;
   background: var(--green); flex-shrink: 0;
 }
 .offline-dot {
-  width: 6px; height: 6px;
+  width: 8px; height: 8px; border-radius: 50%;
   background: var(--muted); flex-shrink: 0;
 }
 
-/* user bar */
+/* user bar bottom */
 .user-bar {
-  padding: 9px 12px;
-  background: var(--bg2);
+  padding: 10px 12px;
+  background: var(--bg1);
   border-top: 1px solid var(--border);
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 10px;
 }
 .user-avatar {
-  width: 28px; height: 28px;
+  width: 32px; height: 32px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 11px;
-  flex-shrink: 0; cursor: pointer;
-  transition: opacity var(--transition);
-  border: 1px solid var(--border);
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px;
+  flex-shrink: 0;
 }
-.user-avatar:hover { opacity: .7; }
-.user-name {
-  font-size: 11px; font-weight: 700; flex: 1; min-width: 0;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  cursor: pointer;
-  transition: color var(--transition);
-}
-.user-name:hover { color: var(--muted); }
-.user-actions { display: flex; gap: 2px; }
+.user-name { font-size: 12px; font-weight: 700; flex: 1; min-width: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-actions { display: flex; gap: 4px; }
 .icon-btn {
-  background: none; border: 1px solid transparent; color: var(--muted); cursor: pointer;
-  font-size: 14px; padding: 4px;
-  transition: all var(--transition);
+  background: none; border: none; color: var(--muted); cursor: pointer;
+  font-size: 16px; padding: 4px; border-radius: 4px; transition: all .15s;
   display: flex; align-items: center; justify-content: center;
 }
-.icon-btn:hover { color: var(--text); border-color: var(--border); }
-.icon-btn.active { color: var(--accent); }
+.icon-btn:hover { color: var(--text); background: var(--bg3); }
+.icon-btn.active { color: var(--accent2); }
 .icon-btn.muted-btn { color: var(--red); }
-.icon-btn.muted-btn:hover { border-color: var(--red); }
 
-/* chat area */
+/* main chat area */
 .chat-area {
   flex: 1; display: flex; flex-direction: column; overflow: hidden;
-  background: var(--bg);
+  background: var(--bg0);
 }
 .chat-topbar {
-  padding: 0 16px;
-  height: 48px; min-height: 48px;
+  padding: 0 20px;
+  height: 52px; min-height: 52px;
   border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 10px;
-  background: var(--bg);
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg0);
 }
-.chat-topbar-icon { font-size: 15px; color: var(--muted); }
-.chat-topbar-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 1px; }
-.chat-topbar-sub { font-size: 9px; color: var(--muted); letter-spacing: 1px; }
-.chat-topbar-sep { width: 1px; height: 16px; background: var(--border); }
+.chat-topbar-icon { font-size: 18px; color: var(--muted); }
+.chat-topbar-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; }
+.chat-topbar-sub { font-size: 11px; color: var(--muted); }
+.chat-topbar-sep { width: 1px; height: 20px; background: var(--border); }
 
 /* messages */
 .messages {
   flex: 1; overflow-y: auto;
-  padding: 10px 0 4px;
+  padding: 16px 0 8px;
   display: flex; flex-direction: column;
 }
 .msg-group {
-  padding: 3px 16px;
-  display: flex; gap: 12px;
+  padding: 4px 20px;
+  display: flex; gap: 14px;
+  border-radius: 4px; transition: background .1s;
 }
-.msg-group:hover { background: rgba(255,255,255,0.015); }
+.msg-group:hover { background: var(--msg-hover); }
 .msg-avatar {
-  width: 32px; height: 32px;
+  width: 36px; height: 36px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 12px;
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px;
   flex-shrink: 0; margin-top: 2px;
-  border: 1px solid var(--border);
 }
 .msg-body { flex: 1; min-width: 0; }
-.msg-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 2px; }
-.msg-author { font-weight: 700; font-size: 12px; }
-.msg-time { font-size: 8px; color: var(--muted); letter-spacing: 0.5px; }
-.msg-content { font-size: 13px; line-height: 1.55; color: var(--text-secondary); word-break: break-word; }
+.msg-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 3px; }
+.msg-author { font-weight: 700; font-size: 13px; }
+.msg-time { font-size: 10px; color: var(--muted); }
+.msg-content { font-size: 13px; line-height: 1.6; color: var(--text); word-break: break-word; }
 .msg-content.system { color: var(--muted); font-style: italic; }
 
 .empty-chat {
   flex: 1; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 10px;
+  align-items: center; justify-content: center; gap: 12px;
   color: var(--muted);
 }
-.empty-chat .big { font-family: 'Syne', sans-serif; font-size: 40px; opacity: .3; }
-.empty-chat p { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
+.empty-chat .big { font-family: 'Syne', sans-serif; font-size: 48px; }
+.empty-chat p { font-size: 12px; letter-spacing: 1px; }
 
 /* input */
-.chat-input-wrap { padding: 10px 16px 14px; }
+.chat-input-wrap {
+  padding: 12px 20px 16px;
+}
 .chat-input-box {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  padding: 0 12px;
-  transition: border var(--transition);
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 0 14px;
+  transition: border .2s;
 }
 .chat-input-box:focus-within { border-color: var(--accent); }
 .chat-input {
   flex: 1; background: none; border: none; outline: none;
   color: var(--text); font-family: 'Space Mono', monospace;
-  font-size: 13px; padding: 11px 0;
-  resize: none; height: 42px; line-height: 20px;
+  font-size: 13px; padding: 13px 0;
+  resize: none; height: 46px; line-height: 20px;
 }
 .chat-input::placeholder { color: var(--muted); }
 .send-btn {
   background: none; border: none; color: var(--accent);
-  cursor: pointer; font-size: 16px; padding: 4px;
-  transition: opacity var(--transition);
-  display: flex; align-items: center;
+  cursor: pointer; font-size: 18px; padding: 4px;
+  transition: color .15s; display: flex; align-items: center;
 }
-.send-btn:hover { opacity: .7; }
+.send-btn:hover { color: var(--accent2); }
 
-/* ═══ VOICE CALL ═══ */
+/* ══════════════════════════════
+   VOICE CALL OVERLAY
+══════════════════════════════ */
 .voice-bar {
   display: none;
   background: var(--bg2); border-top: 1px solid var(--border);
-  padding: 8px 14px; align-items: center; gap: 10px;
+  padding: 10px 16px; align-items: center; gap: 12px;
 }
 .voice-bar.active { display: flex; }
-.voice-status { font-size: 9px; color: var(--green); letter-spacing: 2px; text-transform: uppercase; flex: 1; }
-.voice-timer { font-size: 9px; color: var(--muted); }
+.voice-status { font-size: 11px; color: var(--green); letter-spacing: 1px; flex: 1; }
+.voice-timer { font-size: 11px; color: var(--muted); font-family: 'Space Mono'; }
 
 /* incoming call */
 .call-popup {
   display: none; position: fixed; bottom: 80px; right: 24px; z-index: 900;
-  background: var(--bg2); border: 1px solid var(--border);
-  padding: 20px 24px;
-  min-width: 240px; animation: fadeUp .3s var(--transition-slow);
+  background: var(--bg2); border: 1px solid var(--accent);
+  border-radius: var(--radius); padding: 20px 24px;
+  min-width: 260px; animation: fadeUp .3s ease;
 }
 .call-popup.show { display: block; }
-.call-from { font-size: 9px; color: var(--muted); margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
-.call-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; margin-bottom: 14px; }
-.call-actions { display: flex; gap: 8px; }
-.btn-accept {
-  flex: 1; background: var(--green); border: 1px solid var(--green); color: var(--bg);
-  font-family: 'Space Mono', monospace; font-size: 9px; font-weight: 700;
-  letter-spacing: 2px; text-transform: uppercase; padding: 8px;
-  cursor: pointer; transition: all .2s;
-}
-.btn-accept:hover { background: transparent; color: var(--green); }
-.btn-decline {
-  flex: 1; background: var(--red); border: 1px solid var(--red); color: var(--bg);
-  font-family: 'Space Mono', monospace; font-size: 9px; font-weight: 700;
-  letter-spacing: 2px; text-transform: uppercase; padding: 8px;
-  cursor: pointer; transition: all .2s;
-}
-.btn-decline:hover { background: transparent; color: var(--red); }
+.call-from { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.call-name { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; margin-bottom: 16px; }
+.call-actions { display: flex; gap: 10px; }
+.btn-accept { flex: 1; background: var(--green); border: none; color: #fff; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 1px; padding: 10px; border-radius: 6px; cursor: pointer; transition: opacity .2s; }
+.btn-accept:hover { opacity: .85; }
+.btn-decline { flex: 1; background: var(--red); border: none; color: #fff; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 1px; padding: 10px; border-radius: 6px; cursor: pointer; transition: opacity .2s; }
+.btn-decline:hover { opacity: .85; }
 
-/* ═══ MODALS ═══ */
+/* ══════════════════════════════
+   ADD SERVER MODAL
+══════════════════════════════ */
 .modal-bg {
   display: none; position: fixed; inset: 0; z-index: 800;
-  background: rgba(0,0,0,.7);
-  align-items: center; justify-content: center;
+  background: #00000088; align-items: center; justify-content: center;
 }
 .modal-bg.open { display: flex; }
 .modal {
   background: var(--bg2); border: 1px solid var(--border);
-  padding: 28px; width: 380px; max-width: 92vw;
-  animation: fadeUp .25s var(--transition-slow);
+  border-radius: var(--radius); padding: 32px; width: 380px;
+  animation: fadeUp .25s ease;
 }
-.modal h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; margin-bottom: 4px; }
-.modal p { font-size: 9px; color: var(--muted); margin-bottom: 20px; letter-spacing: 1px; }
-
-.profile-info { text-align: center; margin-bottom: 18px; }
-.profile-avatar {
-  width: 56px; height: 56px; margin: 0 auto 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; font-weight: 800; color: #fff;
-  border: 1px solid var(--border);
-}
-.profile-name { font-size: 16px; font-weight: 700; font-family: 'Syne', sans-serif; }
-.profile-username { font-size: 10px; color: var(--muted); margin-top: 3px; }
-
-.modal-actions { display: flex; gap: 8px; margin-top: 18px; }
+.modal h3 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+.modal p { font-size: 11px; color: var(--muted); margin-bottom: 24px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 20px; }
 .btn-cancel {
-  flex: 1; background: transparent; border: 1px solid var(--border);
+  flex: 1; background: var(--bg3); border: 1px solid var(--border);
   color: var(--muted); font-family: 'Space Mono', monospace;
-  font-size: 9px; letter-spacing: 2px; text-transform: uppercase; padding: 8px;
-  cursor: pointer;
-  transition: all var(--transition);
+  font-size: 11px; padding: 10px; border-radius: 6px; cursor: pointer;
+  transition: all .15s;
 }
-.btn-cancel:hover { color: var(--text); border-color: var(--muted); }
+.btn-cancel:hover { color: var(--text); }
 
-/* ═══ TOAST ═══ */
+/* ══════════════════════════════
+   TOAST
+══════════════════════════════ */
 .toast {
-  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(16px);
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
   background: var(--bg3); border: 1px solid var(--border);
-  color: var(--text); font-size: 10px; letter-spacing: 1px;
-  padding: 10px 22px; z-index: 9999;
-  opacity: 0; transition: all .25s ease;
+  color: var(--text); font-size: 12px; letter-spacing: 1px;
+  padding: 12px 24px; border-radius: var(--radius); z-index: 9999;
+  opacity: 0; transition: all .3s; white-space: nowrap;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.ok { border-color: var(--green); }
 .toast.err { border-color: var(--red); }
 
-/* ═══ FRIEND REQUEST ═══ */
+/* ══════════════════════════════
+   FRIEND REQUEST NOTIF
+══════════════════════════════ */
 .fr-card {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 12px; background: var(--bg3);
-  margin: 3px 8px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; background: var(--bg3);
+  border-radius: var(--radius); margin: 4px 8px;
 }
-.fr-name { flex: 1; font-size: 11px; }
-.fr-actions { display: flex; gap: 4px; }
+.fr-name { flex: 1; font-size: 12px; }
+.fr-actions { display: flex; gap: 6px; }
 .btn-accept-sm {
-  background: var(--green); border: 1px solid var(--green); color: var(--bg);
-  font-size: 11px; width: 24px; height: 24px;
+  background: var(--green); border: none; color: #fff;
+  font-size: 14px; width: 28px; height: 28px; border-radius: 50%;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: all .15s;
+  transition: opacity .15s;
 }
-.btn-accept-sm:hover { background: transparent; color: var(--green); }
+.btn-accept-sm:hover { opacity: .8; }
 .btn-decline-sm {
-  background: var(--red); border: 1px solid var(--red); color: var(--bg);
-  font-size: 11px; width: 24px; height: 24px;
+  background: var(--red); border: none; color: #fff;
+  font-size: 14px; width: 28px; height: 28px; border-radius: 50%;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: all .15s;
+  transition: opacity .15s;
 }
-.btn-decline-sm:hover { background: transparent; color: var(--red); }
+.btn-decline-sm:hover { opacity: .8; }
 
-/* ═══ ADD FRIEND ═══ */
+/* ══════════════════════════════
+   ADD FRIEND INPUT
+══════════════════════════════ */
 .add-friend-row {
-  display: flex; gap: 6px; padding: 6px 8px;
+  display: flex; gap: 8px; padding: 8px;
 }
 .mini-input {
   flex: 1; background: var(--bg3); border: 1px solid var(--border);
-  color: var(--text); font-family: 'Space Mono', monospace; font-size: 11px;
-  padding: 7px 10px; outline: none;
-  transition: border var(--transition);
+  color: var(--text); font-family: 'Space Mono', monospace; font-size: 12px;
+  padding: 7px 10px; border-radius: 6px; outline: none; transition: border .2s;
 }
 .mini-input:focus { border-color: var(--accent); }
 .mini-btn {
-  background: var(--accent); border: 1px solid var(--accent); color: var(--bg);
-  font-family: 'Space Mono', monospace; font-size: 9px; font-weight: 700;
-  padding: 7px 14px; cursor: pointer;
-  transition: all var(--transition);
+  background: var(--accent); border: none; color: #fff;
+  font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
+  padding: 7px 14px; border-radius: 6px; cursor: pointer; transition: background .2s;
+  white-space: nowrap;
 }
-.mini-btn:hover { background: transparent; color: var(--accent); }
+.mini-btn:hover { background: var(--accent2); }
 
-/* ═══ MOBILE TOGGLE ═══ */
-.menu-toggle {
-  display: none;
-  background: none; border: 1px solid var(--border);
-  color: var(--muted);
-  font-size: 18px; cursor: pointer; padding: 4px 8px;
-  transition: all var(--transition);
-}
-.menu-toggle:hover { color: var(--text); border-color: var(--muted); }
-
-/* ═══ RESPONSIVE ═══ */
-@media (max-width: 820px) {
-  .channels-panel {
-    position: fixed; top: 0; left: 0; bottom: 0; z-index: 100;
-    transform: translateX(-100%);
-    transition: transform var(--transition-slow), box-shadow var(--transition-slow);
-    width: 260px;
-  }
-  .channels-panel.open { transform: translateX(0); }
-  .menu-toggle { display: inline-flex; }
-  .srv-bar { width: 50px; }
-  .srv-btn { width: 36px; height: 36px; font-size: 11px; }
-  .srv-add { width: 36px; height: 36px; font-size: 15px; }
-}
-@media (max-width: 480px) {
-  .srv-bar { width: 44px; padding: 8px 0; gap: 3px; }
-  .srv-btn { width: 32px; height: 32px; font-size: 10px; }
-  .srv-add { width: 32px; height: 32px; font-size: 13px; }
-  .srv-btn.dm-btn { font-size: 13px; }
-  .srv-sep { width: 20px; }
-  .chat-topbar { padding: 0 10px; height: 44px; min-height: 44px; }
-  .chat-topbar-name { font-size: 12px; }
-  .msg-group { padding: 3px 10px; gap: 10px; }
-  .msg-avatar { width: 28px; height: 28px; font-size: 10px; }
-  .msg-content { font-size: 12px; }
-  .chat-input-wrap { padding: 8px 10px 10px; }
-  .login-wrap { padding: 24px 20px; }
-  .call-popup { right: 10px; left: 10px; min-width: auto; }
-  .user-name { font-size: 9px; }
-  .user-avatar { width: 24px; height: 24px; font-size: 9px; }
+@media (max-width: 700px) {
+  .channels-panel { display: none; }
+  .srv-bar { width: 52px; }
 }
 </style>
 </head>
@@ -549,10 +479,9 @@ body::before {
     </div>
     <div class="user-bar">
       <div class="user-avatar" id="my-avatar">?</div>
-      <div class="user-name" id="my-name" onclick="showMyProfile()" title="Ver perfil">—</div>
+      <div class="user-name" id="my-name">—</div>
       <div class="user-actions">
         <button class="icon-btn" id="selfmute-btn" onclick="toggleSelfMute()" title="Mudo">🎤</button>
-        <button class="icon-btn" onclick="showMyProfile()" title="Configurações">⚙</button>
         <button class="icon-btn" onclick="doLogout()" title="Sair">🚪</button>
       </div>
     </div>
@@ -561,7 +490,6 @@ body::before {
   <!-- main chat -->
   <div class="chat-area">
     <div class="chat-topbar" id="chat-topbar">
-      <button class="menu-toggle" id="menu-toggle" onclick="toggleMenu()" title="Menu">☰</button>
       <span class="chat-topbar-icon" id="topbar-icon">💬</span>
       <span class="chat-topbar-name" id="topbar-name">Selecione uma conversa</span>
     </div>
@@ -594,49 +522,23 @@ body::before {
 <div class="modal-bg" id="modal-addserver">
   <div class="modal">
     <h3>Adicionar Servidor</h3>
-    <p>Crie um servidor novo ou entre num existente pelo código de convite.</p>
+    <p>Crie um servidor novo ou entre num existente pelo ID.</p>
     <div class="field">
-      <label>Criar servidor</label>
-      <input type="text" class="mini-input" id="srv-name-input" placeholder="Nome do servidor" style="width:100%">
+      <label>Nome do servidor</label>
+      <input type="text" class="mini-input" id="srv-name-input" placeholder="Meu servidor" style="width:100%">
+    </div>
+    <div class="field">
+      <label>Canal inicial</label>
+      <input type="text" class="mini-input" id="srv-chan-input" placeholder="geral" style="width:100%">
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-addserver')">Cancelar</button>
       <button class="btn-primary" style="flex:1;margin-top:0" onclick="addServer()">Criar</button>
     </div>
-    <div style="border-top:1px solid var(--border);margin:16px 0 12px;padding-top:16px">
-      <label>Entrar por convite</label>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <input type="text" class="mini-input" id="invite-input" placeholder="CÓDIGO" style="flex:1;text-transform:uppercase;letter-spacing:2px" onkeydown="if(event.key==='Enter')joinByCode()">
-        <button class="mini-btn" onclick="joinByCode()">Entrar</button>
-      </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
-
-<!-- user profile modal -->
-<div class="modal-bg" id="modal-profile">
-  <div class="modal">
-    <h3>Meu Perfil</h3>
-    <div class="profile-info">
-      <div class="profile-avatar" id="profile-avatar" style="background:#7c6af7">?</div>
-      <div class="profile-name" id="profile-name">—</div>
-      <div class="profile-username" id="profile-username">@—</div>
-    </div>
-    <div class="field">
-      <label>Apelido</label>
-      <input type="text" class="mini-input" id="profile-nickname" style="width:100%">
-    </div>
-    <div class="field">
-      <label>Cor do avatar</label>
-      <input type="color" id="profile-color" value="#7c6af7" style="height:40px;width:60px;border:none">
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('modal-profile')">Cancelar</button>
-      <button class="btn-primary" style="flex:1;margin-top:0" onclick="saveProfile()">Salvar</button>
-    </div>
-  </div>
-</div>
 
 <script>
 const SOUNDS = {
@@ -660,18 +562,17 @@ function playSound(name) {
 // ══════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════
-const SERVER_URL = 'https://void-server-qz9e.onrender.com';
+const SERVER_URL = 'https://void-server-qz9e.onrender.com/';
 
 // ══════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════
 let conn = null;
-let jwtToken = localStorage.getItem('void_token') || '';
 let me = { username: '', nickname: '', color: '#7c6af7', initials: '?' };
-let currentChat = null;
+let currentChat = null; // { type: 'dm'|'channel', id: string, name: string }
 let friends = [];
 let pendingRequests = [];
-let servers = [];
+let servers = JSON.parse(localStorage.getItem('void_servers') || '[]');
 let onlineFriends = {};
 let selfMuted = false;
 let inCall = false;
@@ -717,7 +618,7 @@ async function doAuth() {
   try {
     await loadSignalR();
     conn = new signalR.HubConnectionBuilder()
-      .withUrl(`${SERVER_URL}/voidchat?username=${encodeURIComponent(user)}&token=${encodeURIComponent(jwtToken)}`)
+      .withUrl(`${SERVER_URL}/voidchat?username=${encodeURIComponent(user)}`)
       .withAutomaticReconnect([0, 2000, 5000, 10000])
       .build();
 
@@ -725,11 +626,7 @@ async function doAuth() {
     await conn.start();
 
     const result = await conn.invoke('AuthenticateUser', user, pass, isAuthRegister, nick);
-
-    if (result && result.startsWith('ok:')) {
-      const parts = result.split(':');
-      jwtToken = parts[1];
-      localStorage.setItem('void_token', jwtToken);
+    if (result === 'ok') {
       me.username = user;
       const profile = await conn.invoke('GetUserProfile', user);
       if (profile) {
@@ -741,22 +638,11 @@ async function doAuth() {
       await conn.invoke('GetPendingRequests', user).then(r => { pendingRequests = r || []; });
       playSound('join');
       launchApp();
-
-      // Se registro e servidor oficial existe, pergunta se quer entrar
-      if (isAuthRegister && parts[2] === 'True') {
-        askJoinOfficial();
-      }
-    } else if (result !== 'ok') {
+    } else {
       await conn.stop();
       conn = null;
-      jwtToken = '';
-      localStorage.removeItem('void_token');
-      const msgs = { user_exists: 'Usuario ja existe.', invalid_credentials: 'Usuario ou senha incorretos.', invalid_username_length: 'Usuario: 3-32 caracteres.', invalid_password_length: 'Senha: 4-128 caracteres.', error: 'Erro no servidor.' };
+      const msgs = { user_exists: 'Usuário já existe.', invalid_credentials: 'Usuário ou senha incorretos.', error: 'Erro no servidor.' };
       showErr(msgs[result] || 'Erro desconhecido.');
-    } else {
-      jwtToken = '';
-      localStorage.removeItem('void_token');
-      showErr('Deu ruim.');
     }
   } catch(e) {
     showErr('Não foi possível conectar ao servidor.');
@@ -838,17 +724,8 @@ function setupHubEvents() {
 
   conn.on('Kicked', () => { toast('Desconectado pelo admin.', 'err'); setTimeout(doLogout, 2000); });
 
-  conn.on('FriendsPresenceSnapshot', onlineList => {
-    onlineList.forEach(u => onlineFriends[u] = true);
-    renderChannelsPanel();
-  });
-
-  conn.on('UserJoinedServer', (user, serverName) => {
-    toast(`${user} entrou no servidor ${serverName}`, 'ok');
-  });
-
   conn.onreconnecting(() => toast('Reconectando...'));
-  conn.onreconnected(() => { toast('Reconectado!', 'ok'); try { conn.invoke('RegisterPresence'); } catch {} });
+  conn.onreconnected(() => toast('Reconectado!', 'ok'));
 }
 
 // ══════════════════════════════════════════════
@@ -858,58 +735,14 @@ function launchApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').classList.add('visible');
 
+  // user bar
   const av = document.getElementById('my-avatar');
   av.textContent = me.initials;
   av.style.background = me.color;
   document.getElementById('my-name').textContent = me.nickname;
 
-  try { conn.invoke('RegisterPresence'); } catch {}
-  try { conn.invoke('NotifyOnline', me.username); } catch {}
-
-  loadServers().then(() => {
-    renderServers();
-    showDMs();
-  });
-}
-
-// ══════════════════════════════════════════════
-// OFFICIAL SERVER
-// ══════════════════════════════════════════════
-function askJoinOfficial() {
-  const bg = document.createElement('div');
-  bg.className = 'modal-bg open';
-  bg.id = 'modal-official';
-  bg.innerHTML = `
-    <div class="modal">
-      <h3>Servidor VOID Oficial</h3>
-      <p>Você quer entrar no servidor oficial do VOID?</p>
-      <p style="font-size:12px;color:var(--muted)">Encontre outros usuários, veja novidades e dê sugestões.</p>
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal('modal-official');document.getElementById('modal-official').remove()">Agora não</button>
-        <button class="btn-primary" style="flex:1;margin-top:0" onclick="joinOfficial()">Entrar</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(bg);
-  bg.addEventListener('click', e => { if (e.target === bg) { bg.remove(); } });
-}
-
-async function joinOfficial() {
-  try {
-    await conn.invoke('JoinOfficialServer');
-    toast('Bem-vindo ao servidor VOID Oficial!', 'ok');
-    await loadServers();
-    renderServers();
-  } catch { toast('Erro ao entrar.', 'err'); }
-  const el = document.getElementById('modal-official');
-  if (el) el.remove();
-}
-
-async function loadServers() {
-  try {
-    const list = await conn.invoke('GetServers');
-    servers = list || [];
-  } catch { servers = []; }
+  renderServers();
+  showDMs();
 }
 
 // ══════════════════════════════════════════════
@@ -917,13 +750,9 @@ async function loadServers() {
 // ══════════════════════════════════════════════
 function renderServers() {
   const list = document.getElementById('srv-list');
-  if (!servers || servers.length === 0) {
-    list.innerHTML = '<div class="cp-item" style="color:var(--muted);cursor:default;font-size:10px;padding:8px">Nenhum servidor</div>';
-    return;
-  }
   list.innerHTML = servers.map((s, i) => `
-    <button class="srv-btn" title="${escHtml(s.name)}" onclick="selectServer(${i})" id="srv-btn-${i}">
-      ${s.name ? s.name[0].toUpperCase() : '?'}
+    <button class="srv-btn" title="${s.name}" onclick="selectServer(${i})" id="srv-btn-${i}">
+      ${s.name[0].toUpperCase()}
     </button>
   `).join('');
 }
@@ -937,48 +766,29 @@ function selectServer(i) {
 
   document.getElementById('cp-title').textContent = s.name;
   const body = document.getElementById('cp-body');
-  let html = `<div class="cp-section-label">Canais</div>`;
-  if (s.channels) {
-    html += s.channels.map(c => `
-      <div class="cp-item" onclick="selectChannel('${escHtml(s.id)}','${escHtml(c)}')" id="ch-${escHtml(s.id)}-${escHtml(c)}">
+  body.innerHTML = `
+    <div class="cp-section-label">Canais</div>
+    ${s.channels.map(c => `
+      <div class="cp-item" onclick="selectChannel('${s.name}','${c}')" id="ch-${s.name}-${c}">
         <span class="icon">#</span>
-        <span class="name">${escHtml(c)}</span>
+        <span class="name">${c}</span>
       </div>
-    `).join('');
-  }
-  body.innerHTML = html;
+    `).join('')}
+  `;
   resetChat('# ' + s.name, '⚡');
 }
 
 function addServer() {
   const name = document.getElementById('srv-name-input').value.trim();
+  const chan  = document.getElementById('srv-chan-input').value.trim() || 'geral';
   if (!name) return;
-
-  conn.invoke('CreateServer', name).then(async server => {
-    if (server) {
-      await loadServers();
-      renderServers();
-      closeModal('modal-addserver');
-      document.getElementById('srv-name-input').value = '';
-      toast(`Servidor "${server.name}" criado!`, 'ok');
-    }
-  }).catch(() => toast('Erro ao criar servidor.', 'err'));
-}
-
-async function joinByCode() {
-  const code = document.getElementById('invite-input').value.trim().toUpperCase();
-  if (!code) return;
-  try {
-    const ok = await conn.invoke('JoinServer', code);
-    if (ok) {
-      await loadServers();
-      renderServers();
-      closeModal('modal-addserver');
-      toast('Entrou no servidor!', 'ok');
-    } else {
-      toast('Convite inválido.', 'err');
-    }
-  } catch { toast('Erro ao entrar.', 'err'); }
+  servers.push({ name, channels: [chan] });
+  localStorage.setItem('void_servers', JSON.stringify(servers));
+  renderServers();
+  closeModal('modal-addserver');
+  document.getElementById('srv-name-input').value = '';
+  document.getElementById('srv-chan-input').value = '';
+  toast('Servidor criado!', 'ok');
 }
 
 // ══════════════════════════════════════════════
@@ -1079,17 +889,14 @@ function resetChat(name, icon) {
 // ══════════════════════════════════════════════
 // MESSAGES
 // ══════════════════════════════════════════════
-function appendMessage(nickname, initials, content, color, prepend = false, timestamp = null) {
+function appendMessage(nickname, initials, content, color, prepend = false) {
   const msgs = document.getElementById('messages');
   const empty = msgs.querySelector('.empty-chat');
   if (empty) empty.remove();
 
   const el = document.createElement('div');
   el.className = 'msg-group';
-  
-  // use provided timestamp or current time
-  const time = timestamp ? new Date(timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  
+  const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   el.innerHTML = `
     <div class="msg-avatar" style="background:${color || '#7c6af7'}">${initials || '?'}</div>
     <div class="msg-body">
@@ -1288,46 +1095,16 @@ async function doLogout() {
   playSound('udisconnect');
   await endVoiceCall();
   if (conn) { try { await conn.stop(); } catch {} conn = null; }
-  
-  // clear state
-  jwtToken = '';
-  localStorage.removeItem('void_token');
-  me = { username: '', nickname: '', color: '#7c6af7', initials: '?' };
-  friends = [];
-  pendingRequests = [];
-  onlineFriends = {};
-  servers = [];
+  friends = []; pendingRequests = []; onlineFriends = {};
   currentChat = null;
-  
-  // show login
   document.getElementById('app').classList.remove('visible');
   document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('l-user').value = '';
   document.getElementById('l-pass').value = '';
-  document.getElementById('l-nick').value = '';
 }
 
 // ══════════════════════════════════════════════
 // HELPERS
 // ══════════════════════════════════════════════
-function toggleMenu() {
-  const panel = document.querySelector('.channels-panel');
-  if (panel) panel.classList.toggle('open');
-}
-
-document.addEventListener('click', e => {
-  const panel = document.querySelector('.channels-panel');
-  const toggle = document.getElementById('menu-toggle');
-  if (panel && panel.classList.contains('open') && !panel.contains(e.target) && !toggle.contains(e.target)) {
-    panel.classList.remove('open');
-  }
-});
-
-document.querySelector('.cp-body')?.addEventListener('click', () => {
-  const panel = document.querySelector('.channels-panel');
-  if (panel && window.innerWidth <= 820) panel.classList.remove('open');
-});
-
 function renderChannelsPanel() {
   const title = document.getElementById('cp-title').textContent;
   if (title === 'Mensagens') renderDMPanel();
@@ -1335,34 +1112,6 @@ function renderChannelsPanel() {
 
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-function showMyProfile() {
-  document.getElementById('profile-nickname').value = me.nickname;
-  document.getElementById('profile-color').value = me.color;
-  document.getElementById('profile-avatar').textContent = me.initials;
-  document.getElementById('profile-avatar').style.background = me.color;
-  document.getElementById('profile-name').textContent = me.nickname;
-  document.getElementById('profile-username').textContent = '@' + me.username;
-  openModal('modal-profile');
-}
-
-async function saveProfile() {
-  const nick = document.getElementById('profile-nickname').value.trim();
-  const color = document.getElementById('profile-color').value;
-  if (!nick) return;
-  
-  try {
-    await conn.invoke('UpdateProfile', me.username, nick, color);
-    me.nickname = nick;
-    me.color = color;
-    me.initials = nick[0].toUpperCase();
-    document.getElementById('my-name').textContent = me.nickname;
-    document.getElementById('my-avatar').textContent = me.initials;
-    document.getElementById('my-avatar').style.background = me.color;
-    closeModal('modal-profile');
-    toast('Perfil atualizado!', 'ok');
-  } catch(e) { toast('Erro ao salvar.', 'err'); }
-}
 document.querySelectorAll('.modal-bg').forEach(bg => {
   bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('open'); });
 });
