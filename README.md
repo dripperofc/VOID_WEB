@@ -1,18 +1,27 @@
-# VOID · Web Client
+# VOID — Web Client
 
-> Cliente web oficial do VOID — acesse o chat em qualquer dispositivo, sem instalar nada.
+> Cliente web do VOID — acessa o chat em qualquer dispositivo sem instalar nada.
 
-**[→ Abrir o VOID Web](https://void-web.onrender.com)**
+**[→ Abrir VOID Web](https://void-web.onrender.com)**
 
 ---
 
 ## O que é
 
-VOID é um app de chat em tempo real com voz, DMs, canais e servidores — inspirado no Discord, feito do zero. Este repositório contém o cliente web: um único arquivo HTML que roda em qualquer browser, em qualquer dispositivo.
+VOID é um chat em tempo real com voz, DMs, canais e servidores — inspirado no Discord, feito do zero. Este repositório é o cliente web: HTML/CSS/JS puro.
 
 ## Como usar
 
-Acesse pelo link acima, crie sua conta ou entre com suas credenciais do VOID Desktop. Tudo sincroniza no mesmo servidor.
+Abre o link acima, cria conta ou usa as credenciais do VOID Desktop. Tudo sincroniza no mesmo servidor.
+
+## Como testar localmente
+
+```bash
+python3 -m http.server 8080
+# Abre http://localhost:8080
+```
+
+---
 
 ## Stack
 
@@ -20,12 +29,20 @@ Acesse pelo link acima, crie sua conta ou entre com suas credenciais do VOID Des
 - SignalR para mensagens em tempo real
 - WebRTC para chamadas de voz P2P
 
-## Repositórios relacionados
+---
+
+## Repositórios
 
 | Repo | Descrição |
 |------|-----------|
 | [VOID](https://github.com/dripperofc/VOID) | Cliente desktop (Avalonia / .NET) |
 
+---
+
 ## Status
 
 `PRE-ALPHA` — em desenvolvimento ativo. Bugs são esperados.
+
+---
+
+*VOID Project © 2026 — Licença MIT*
