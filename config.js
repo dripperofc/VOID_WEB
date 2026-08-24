@@ -1,2 +1,2 @@
 // ── Configuração do servidor VOID ──────────────────────────────────
-window.SERVER_URL = "https://voidserver-production.up.railway.app";
+window.SERVER_URL = window.location.origin;
